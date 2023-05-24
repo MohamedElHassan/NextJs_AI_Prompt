@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
-import { set } from 'mongoose';
+import Link from "next/link";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import { set } from "mongoose";
 const Nav = () => {
   const { data: session } = useSession();
   const [providers, setProviders] = useState(null);
@@ -38,7 +38,7 @@ const Nav = () => {
             <button type="button" onClick={signOut} className="outline_btn">
               Sign Out
             </button>
-            <Link href={`/profile/${session?.user.id}`}>
+            <Link href={`/profile`}>
               <Image
                 src={session?.user.image}
                 width={37}
@@ -79,7 +79,7 @@ const Nav = () => {
             {toggleDropdown && (
               <div className="dropdown">
                 <Link
-                  href={`/profile/${session?.user.id}`}
+                  href={`/profile`}
                   className="dropdown_link"
                   onClick={() => setToggleDropdown(false)}
                 >

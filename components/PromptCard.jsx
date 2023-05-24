@@ -1,30 +1,36 @@
-'use client';
-import { useState } from 'react';
-import Image from 'next/image';
-import { useSession } from 'next-auth/react';
-import { useRouter, usePathname } from 'next/navigation';
+"use client";
+import { useState } from "react";
+import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { useRouter, usePathname } from "next/navigation";
 
 const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
   const { data: session } = useSession();
   const pathName = usePathname();
   const router = useRouter();
-  const [copied, setCopied] = useState('');
+  const [copied, setCopied] = useState("");
+
+  const handleProfileClick = () => {
+    console.log(post);
+
+    if (post.creator._id === session?.user.id) return router.push("/profile");
+
+    router.push(`/profile/${post.creator._id}?name=${post.creator.username}`);
+  };
 
   // function to handle copy
   const handleCopy = () => {
     setCopied(post.prompt);
     navigator.clipboard.writeText(post.prompt);
     setTimeout(() => {
-      setCopied('');
+      setCopied("");
     }, 3000);
   };
   return (
     <div className="prompt_card">
       <div className="flex justify-between items-start gap-5">
         <div
-          onClick={() => {
-            router.push(`/profile/${post.creator._id}`);
-          }}
+          onClick={handleProfileClick}
           className="flex-1 flex justify-start items-center gap-3 cursor-pointer"
         >
           <Image
@@ -48,8 +54,8 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
             alt="copy-btn"
             src={
               copied === post.prompt
-                ? '/assets/icons/tick.svg'
-                : '/assets/icons/copy.svg'
+                ? "/assets/icons/tick.svg"
+                : "/assets/icons/copy.svg"
             }
             width={12}
             height={12}
@@ -63,7 +69,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
       >
         #{post.tag}
       </p>
-      {session?.user.id === post.creator._id && pathName === '/profile' && (
+      {session?.user.id === post.creator._id && pathName === "/profile" && (
         <div className="mt-5 flex-center gap-4 border-t border-gray-100 pt-3">
           <p
             onClick={handleEdit}

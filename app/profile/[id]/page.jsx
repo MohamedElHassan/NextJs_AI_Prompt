@@ -1,72 +1,35 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter, usePathname } from 'next/navigation';
+"use client";
 
-import Profile from '@components/Profile';
-const MyProfile = ({ params }) => {
-  const [profileData, setProfileData] = useState([]);
-  const router = useRouter();
-  const pathName = usePathname();
-  const { data: session } = useSession();
-  useEffect(() => {
-    const getProfileData = async () => {
-      const response = await fetch(`/api/profile/${params.id}`);
-      const data = await response.json();
-      setProfileData(data);
-    };
-    getProfileData();
-  }, []);
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
-  const handleEdit = (post) => {
-    router.push(`/update-prompt?id=${post._id}`);
-  };
-  const handleDelete = async (post) => {
-    const hasConfirmed = confirm(
-      'Are you sure you want to delete this prompt?'
-    );
-    if (hasConfirmed) {
-      try {
-        await fetch(`/api/prompt/${post._id.toString()}`, {
-          method: 'DELETE',
-        });
-        const filteredPosts = posts.filter((p) => p._id !== post._id);
-        setPosts(filteredPosts);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
+import Profile from "@components/Profile";
 
-  const [posts, setPosts] = useState([]);
+const UserProfile = ({ params }) => {
+  const searchParams = useSearchParams();
+  const userName = searchParams.get("name");
+  console.log(userName);
+
+  const [userPosts, setUserPosts] = useState([]);
+
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(`/api/users/${params.id}/posts`);
+      const response = await fetch(`/api/users/${params?.id}/posts`);
       const data = await response.json();
-      setPosts(data);
+
+      setUserPosts(data);
     };
 
-    if (session?.user.id) fetchPosts();
-  }, [session?.user.id]);
+    if (params?.id) fetchPosts();
+  }, [params.id]);
 
-  if (!profileData) {
-    return (
-      <>
-        <h1>Loading...</h1>
-      </>
-    );
-  }
   return (
     <Profile
-      name={session?.user.id !== params.id ? profileData.username : 'My'}
-      desc={`Welocme to ${
-        session?.user.id !== params.id ? profileData.username : 'your'
-      } personalized profile page`}
-      data={posts}
-      handleEdit={handleEdit}
-      handleDelete={handleDelete}
+      name={userName}
+      desc={`Welcome to ${userName}'s personalized profile page. Explore ${userName}'s exceptional prompts and be inspired by the power of their imagination`}
+      data={userPosts}
     />
   );
 };
 
-export default MyProfile;
+export default UserProfile;
