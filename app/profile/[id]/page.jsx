@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
 
-import Profile from '@components/profile';
+import Profile from '@components/Profile';
 const MyProfile = ({ params }) => {
   const [profileData, setProfileData] = useState([]);
   const router = useRouter();
