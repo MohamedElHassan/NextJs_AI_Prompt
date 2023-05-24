@@ -25,13 +25,21 @@ const Feed = () => {
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
 
-  // Using Back-end
-  const fetchSearchPosts = async (searchText) => {
-    const response = await fetch(`/api/search/${searchText}`);
+  const fetchPosts = async () => {
+    const response = await fetch("/api/prompt");
     const data = await response.json();
-    console.log(data);
-    setfilteredPosts(data);
+    setAllPosts(data);
   };
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  // Using Back-end
+  // const fetchSearchPosts = async (searchText) => {
+  //   const response = await fetch(`/api/search/${searchText}`);
+  //   const data = await response.json();
+  //   console.log(data);
+  // };
 
   const filterPrompts = (searchtext) => {
     const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
@@ -62,15 +70,7 @@ const Feed = () => {
     const searchResult = filterPrompts(tagName);
     setSearchedResults(searchResult);
   };
-  
-  const fetchPosts = async () => {
-    const response = await fetch("/api/prompt");
-    const data = await response.json();
-    setAllPosts(data);
-  };
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+
   return (
     <section className="feed">
       <form className="relative w-full flex-center">
